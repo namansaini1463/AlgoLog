@@ -39,7 +39,8 @@ function getIntensity(count: number, max: number): string {
 interface MonthData {
   label: string;
   year: number;
-  weeks: (HeatmapEntry | null)[][]; // weeks -> days (0=Mon..6=Sun)
+  // weeks -> days (0=Mon..6=Sun)
+  weeks: (HeatmapEntry | null)[][]; 
 }
 
 function groupByMonth(entries: HeatmapEntry[]): MonthData[] {
