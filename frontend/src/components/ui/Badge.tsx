@@ -7,11 +7,11 @@ interface BadgeProps {
 }
 
 const variantStyles = {
-  easy: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  medium: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-  hard: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  topic: 'bg-primary/10 text-primary dark:bg-primary/20',
-  default: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
+  easy: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-900/50',
+  medium: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50',
+  hard: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-900/50',
+  topic: 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-light border border-primary/20 dark:border-primary/30',
+  default: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700',
 };
 
 export function difficultyVariant(d: string): BadgeProps['variant'] {
@@ -23,7 +23,7 @@ export default function Badge({ children, variant = 'default', className }: Badg
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+        'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors',
         variantStyles[variant],
         className
       )}

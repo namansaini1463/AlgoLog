@@ -47,24 +47,24 @@ export default function AdminTopicsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Topics</h1>
-        <Button onClick={openCreate}>+ New Topic</Button>
+      <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Topics</h1>
+        <Button onClick={openCreate} className="w-full sm:w-auto">+ New Topic</Button>
       </div>
 
       {isLoading ? (
         <div className="flex justify-center py-12"><Spinner className="h-8 w-8" /></div>
       ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {topics.map((t) => (
-            <div key={t.id} className="flex items-center justify-between rounded-lg border border-gray-200 bg-surface-light p-4 dark:border-gray-700 dark:bg-surface-dark">
-              <div className="flex items-center gap-3">
-                <div className="h-4 w-4 rounded-full" style={{ backgroundColor: t.colorHex || '#7F77DD' }} />
-                <span className="font-medium text-gray-900 dark:text-gray-100">{t.name}</span>
+            <div key={t.id} className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 transition-all hover:shadow-md dark:border-gray-700 dark:bg-surface-dark">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="h-4 w-4 rounded-full shrink-0" style={{ backgroundColor: t.colorHex || '#7F77DD' }} />
+                <span className="font-medium text-gray-900 dark:text-gray-100 truncate">{t.name}</span>
               </div>
-              <div className="flex gap-2">
-                <button onClick={() => openEdit(t)} className="text-xs text-primary hover:underline">Edit</button>
-                <button onClick={() => deleteMutation.mutate(t.id)} className="text-xs text-red-500 hover:underline">Delete</button>
+              <div className="flex gap-2 shrink-0">
+                <button onClick={() => openEdit(t)} className="text-xs sm:text-sm text-primary hover:underline">Edit</button>
+                <button onClick={() => deleteMutation.mutate(t.id)} className="text-xs sm:text-sm text-red-500 hover:underline">Delete</button>
               </div>
             </div>
           ))}

@@ -92,17 +92,17 @@ export default function DashboardPage() {
       <TopBar title="Dashboard" showAddButton />
 
       {/* Personalized Welcome Section */}
-      <div className="mb-6 rounded-xl bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 dark:from-primary/20 dark:via-purple-500/20 dark:to-pink-500/20 p-6 border border-primary/20">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+      <div className="mb-6 rounded-xl bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 dark:from-primary/20 dark:via-purple-500/20 dark:to-pink-500/20 p-5 sm:p-6 border border-primary/20 dark:border-primary/30 shadow-sm">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
           {getGreeting()}, {user?.username || 'there'}! 👋
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
           {getMotivationalMessage()}
         </p>
       </div>
 
       {/* Stats row */}
-      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <StatCard label="Total Solved" value={streak?.totalSolved ?? 0} icon="✅" />
         <StatCard label="Total Revised" value={streak?.totalRevised ?? 0} icon="🔁" color="bg-blue-100 dark:bg-blue-900/20" />
         <StatCard label="Due Today" value={dueTodayCount} icon="📅" color="bg-amber-100 dark:bg-amber-900/20" />
@@ -114,15 +114,15 @@ export default function DashboardPage() {
       <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Today's Revisions */}
         <Card>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm sm:text-base font-semibold text-gray-700 dark:text-gray-300">
               Today's Revisions ({dashboardRevisions.length})
             </h3>
             <Link
               to="/revisions"
-              className="text-xs text-primary hover:underline"
+              className="text-xs sm:text-sm text-primary hover:underline font-medium"
             >
-              See full queue
+              See full queue →
             </Link>
           </div>
           {revisionItems.length > 0 ? (
@@ -141,20 +141,20 @@ export default function DashboardPage() {
                 ))}
               </div>
               {moreCount > 0 && (
-                <div className="mt-3 text-center">
-                  <Link to="/revisions" className="text-xs text-primary hover:underline">
-                    + {moreCount} more due today
+                <div className="mt-4 text-center">
+                  <Link to="/revisions" className="text-xs sm:text-sm text-primary hover:underline font-medium">
+                    + {moreCount} more due today →
                   </Link>
                 </div>
               )}
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <div className="text-3xl mb-2">🎉</div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <div className="flex flex-col items-center justify-center py-10 sm:py-12 text-center">
+              <div className="text-4xl sm:text-5xl mb-3">🎉</div>
+              <p className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-1">
                 All caught up, {user?.username}!
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">No revisions due today.</p>
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">No revisions due today.</p>
             </div>
           )}
         </Card>

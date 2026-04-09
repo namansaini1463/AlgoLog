@@ -16,9 +16,11 @@ export default function Select({ label, options, className, ...props }: SelectPr
       )}
       <select
         className={cn(
-          'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm',
-          'focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20',
-          'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100',
+          'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm sm:text-base',
+          'transition-all duration-200',
+          'focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30',
+          'dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100',
+          'disabled:bg-gray-50 disabled:cursor-not-allowed dark:disabled:bg-gray-800',
           className
         )}
         {...props}

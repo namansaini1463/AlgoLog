@@ -96,76 +96,120 @@ export default function AdminBankPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Problem Bank</h1>
-        <Button onClick={openCreate}>+ New Problem</Button>
+      <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Problem Bank</h1>
+        <Button onClick={openCreate} className="w-full sm:w-auto">+ New Problem</Button>
       </div>
 
       {isLoading ? (
         <div className="flex justify-center py-12"><Spinner className="h-8 w-8" /></div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th className="px-4 py-3 font-medium">Title</th>
-                <th className="px-4 py-3 font-medium">Tags</th>
-                <th className="px-4 py-3 font-medium">Difficulty</th>
-                <th className="px-4 py-3 font-medium">Platform</th>
-                <th className="px-4 py-3 font-medium">Published</th>
-                <th className="px-4 py-3 font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {data?.content.map((p) => (
-                <tr key={p.id} className="bg-surface-light dark:bg-surface-dark">
-                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{p.title}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {p.tags && p.tags.length > 0 ? (
-                        p.tags.slice(0, 3).map((tag) => (
-                          <Badge key={tag} variant="topic">{tag}</Badge>
-                        ))
-                      ) : (
-                        <span className="text-xs text-gray-400">No tags</span>
-                      )}
-                      {p.tags && p.tags.length > 3 && (
-                        <span className="text-xs text-gray-400">+{p.tags.length - 3}</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3"><Badge variant={difficultyVariant(p.difficulty)}>{p.difficulty}</Badge></td>
-                  <td className="px-4 py-3 text-gray-500">{p.platform || '-'}</td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => toggleMutation.mutate(p.id)}
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                        p.isPublished ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800'
-                      }`}
-                    >
-                      {p.isPublished ? 'Published' : 'Draft'}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      <button onClick={() => openEdit(p)} className="text-xs text-primary hover:underline">Edit</button>
-                      <button onClick={() => deleteMutation.mutate(p.id)} className="text-xs text-red-500 hover:underline">Delete</button>
-                    </div>
-                  </td>
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                  <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-300">Title</th>
+                  <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-300">Tags</th>
+                  <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-300">Difficulty</th>
+                  <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-300">Platform</th>
+                  <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-300">Published</th>
+                  <th className="px-4 py-3 font-medium text-gray-700 dark:text-gray-300">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {data?.content.map((p) => (
+                  <tr key={p.id} className="bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{p.title}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        {p.tags && p.tags.length > 0 ? (
+                          p.tags.slice(0, 3).map((tag) => (
+                            <Badge key={tag} variant="topic">{tag}</Badge>
+                          ))
+                        ) : (
+                          <span className="text-xs text-gray-400">No tags</span>
+                        )}
+                        {p.tags && p.tags.length > 3 && (
+                          <span className="text-xs text-gray-400">+{p.tags.length - 3}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3"><Badge variant={difficultyVariant(p.difficulty)}>{p.difficulty}</Badge></td>
+                    <td className="px-4 py-3 text-gray-500 dark:text-gray-400">{p.platform || '-'}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => toggleMutation.mutate(p.id)}
+                        className={`rounded-full px-2 py-0.5 text-xs font-medium transition-colors ${
+                          p.isPublished ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
+                        }`}
+                      >
+                        {p.isPublished ? 'Published' : 'Draft'}
+                      </button>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2">
+                        <button onClick={() => openEdit(p)} className="text-xs text-primary hover:underline">Edit</button>
+                        <button onClick={() => deleteMutation.mutate(p.id)} className="text-xs text-red-500 hover:underline">Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3">
+            {data?.content.map((p) => (
+              <div key={p.id} className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-surface-dark">
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex-1">{p.title}</h3>
+                  <Badge variant={difficultyVariant(p.difficulty)}>{p.difficulty}</Badge>
+                </div>
+                
+                {p.tags && p.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {p.tags.map((tag) => (
+                      <Badge key={tag} variant="topic">{tag}</Badge>
+                    ))}
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between text-sm mb-3">
+                  <span className="text-gray-600 dark:text-gray-400">{p.platform || 'No platform'}</span>
+                  <button
+                    onClick={() => toggleMutation.mutate(p.id)}
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                      p.isPublished ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
+                    }`}
+                  >
+                    {p.isPublished ? 'Published' : 'Draft'}
+                  </button>
+                </div>
+                
+                <div className="flex gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                  <button onClick={() => openEdit(p)} className="text-sm text-primary hover:underline font-medium">Edit</button>
+                  <button onClick={() => deleteMutation.mutate(p.id)} className="text-sm text-red-500 hover:underline font-medium">Delete</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {data && data.totalPages > 1 && (
-        <div className="mt-4 flex justify-center gap-2">
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-2">
           <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0}
-            className="rounded-lg px-3 py-1 text-sm disabled:opacity-40">Previous</button>
-          <span className="px-3 py-1 text-sm text-gray-500">{page + 1} / {data.totalPages}</span>
+            className="w-full sm:w-auto rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed">
+            Previous
+          </button>
+          <span className="px-3 py-1 text-sm font-medium text-gray-700 dark:text-gray-300">{page + 1} / {data.totalPages}</span>
           <button onClick={() => setPage((p) => Math.min(data.totalPages - 1, p + 1))} disabled={page >= data.totalPages - 1}
-            className="rounded-lg px-3 py-1 text-sm disabled:opacity-40">Next</button>
+            className="w-full sm:w-auto rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed">
+            Next
+          </button>
         </div>
       )}
 
@@ -183,13 +227,13 @@ export default function AdminBankPage() {
             allowCustom
             placeholder="Search or add tags..."
           />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Platform</label>
               <select
                 value={form.platform || ''}
                 onChange={(e) => setForm({ ...form, platform: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/30 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm sm:text-base transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
               >
                 <option value="">Select platform...</option>
                 {ALL_PLATFORMS.map((p) => (

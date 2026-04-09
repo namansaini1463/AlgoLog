@@ -10,7 +10,9 @@ export default function Card({ children, className }: CardProps) {
   return (
     <div
       className={cn(
-        'rounded-xl bg-surface-light p-5 shadow-sm border border-gray-200 dark:bg-surface-dark dark:border-gray-800',
+        'rounded-xl bg-white p-4 sm:p-5 shadow-sm border border-gray-200 transition-all duration-200',
+        'hover:shadow-md hover:border-gray-300',
+        'dark:bg-surface-dark dark:border-gray-800 dark:hover:border-gray-700',
         className
       )}
     >

@@ -66,21 +66,21 @@ export default function ProblemsPage() {
           </div>
 
           {/* Pagination controls */}
-          <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+          <div className="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
             {/* Page size selector */}
-            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-              <span>Show</span>
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+              <span className="hidden sm:inline">Show</span>
               <select
                 value={pageSize}
                 onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/30 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 transition-all"
               >
                 {PAGE_SIZES.map((size) => (
                   <option key={size} value={size}>{size}</option>
                 ))}
               </select>
-              <span>per page</span>
-              <span className="ml-2 text-gray-400">
+              <span className="hidden sm:inline">per page</span>
+              <span className="text-gray-500 dark:text-gray-500">
                 {startItem}–{endItem} of {totalElements}
               </span>
             </div>
@@ -91,7 +91,7 @@ export default function ProblemsPage() {
                 <button
                   onClick={() => setPage(0)}
                   disabled={page === 0}
-                  className="rounded-lg px-2 py-1 text-sm disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="rounded-lg px-2 py-1.5 text-sm transition-colors disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-300"
                   title="First page"
                 >
                   «
@@ -99,24 +99,24 @@ export default function ProblemsPage() {
                 <button
                   onClick={() => setPage((p) => Math.max(0, p - 1))}
                   disabled={page === 0}
-                  className="rounded-lg px-3 py-1 text-sm disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="rounded-lg px-3 py-1.5 text-sm transition-colors disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-300"
                 >
                   Previous
                 </button>
-                <span className="px-3 py-1 text-sm text-gray-500 dark:text-gray-400">
+                <span className="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300">
                   {page + 1} / {totalPages}
                 </span>
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
                   disabled={page >= totalPages - 1}
-                  className="rounded-lg px-3 py-1 text-sm disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="rounded-lg px-3 py-1.5 text-sm transition-colors disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-300"
                 >
                   Next
                 </button>
                 <button
                   onClick={() => setPage(totalPages - 1)}
                   disabled={page >= totalPages - 1}
-                  className="rounded-lg px-2 py-1 text-sm disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="rounded-lg px-2 py-1.5 text-sm transition-colors disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-300"
                   title="Last page"
                 >
                   »
