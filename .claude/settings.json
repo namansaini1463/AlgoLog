@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod +x \"/c/Users/NamanSaini/OneDrive - Veersa Technologies/Desktop/Naman/AlgoLog/backend/mvnw\")",
+      "Bash(./mvnw.cmd compile:*)",
+      "Bash(cmd.exe //c \"mvnw.cmd compile -q\")",
+      "Bash(cmd.exe //c \".\\\\mvnw.cmd compile\")",
+      "Bash(cmd.exe //c \".\\\\mvnw.cmd clean compile\")"
+    ]
+  }
+}

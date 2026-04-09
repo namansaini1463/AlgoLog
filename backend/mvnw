@@ -1,0 +1,47 @@
+#!/bin/sh
+# Maven Wrapper script - downloads Maven if not present and runs it
+# Licensed to the Apache Software Foundation (ASF)
+
+set -euf
+
+# Determine the base directory
+if [ -z "${MAVEN_BASEDIR-}" ]; then
+  MAVEN_BASEDIR=$(cd "$(dirname "$0")" && pwd)
+fi
+
+# Properties file
+MAVEN_PROJECTBASEDIR="${MAVEN_BASEDIR}"
+MAVEN_WRAPPER_PROPERTIES="${MAVEN_PROJECTBASEDIR}/.mvn/wrapper/maven-wrapper.properties"
+
+# Read distributionUrl from properties
+if [ -f "$MAVEN_WRAPPER_PROPERTIES" ]; then
+  distributionUrl=$(grep 'distributionUrl' "$MAVEN_WRAPPER_PROPERTIES" | cut -d'=' -f2- | tr -d '\r')
+fi
+
+MAVEN_HOME="${HOME}/.m2/wrapper/dists/apache-maven-3.9.9"
+
+if [ ! -d "$MAVEN_HOME" ]; then
+  echo "Downloading Maven..."
+  mkdir -p "$MAVEN_HOME"
+  if command -v curl > /dev/null 2>&1; then
+    curl -fsSL "$distributionUrl" -o "$MAVEN_HOME/maven.zip"
+  elif command -v wget > /dev/null 2>&1; then
+    wget -q "$distributionUrl" -O "$MAVEN_HOME/maven.zip"
+  else
+    echo "Error: curl or wget required" >&2
+    exit 1
+  fi
+  cd "$MAVEN_HOME"
+  unzip -q maven.zip
+  rm maven.zip
+  cd "$MAVEN_PROJECTBASEDIR"
+fi
+
+MAVEN_EXEC=$(find "$MAVEN_HOME" -name 'mvn' -path '*/bin/mvn' | head -1)
+
+if [ -z "$MAVEN_EXEC" ]; then
+  echo "Error: Could not find mvn executable in $MAVEN_HOME" >&2
+  exit 1
+fi
+
+exec "$MAVEN_EXEC" "$@"

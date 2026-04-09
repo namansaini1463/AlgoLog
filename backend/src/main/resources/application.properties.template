@@ -1,0 +1,75 @@
+# Application Properties Template for OAuth2
+# Copy this to application.properties and fill in your OAuth credentials
+
+# Server
+server.port=8080
+
+# Database
+spring.datasource.url=jdbc:postgresql://localhost:5432/algolog
+spring.datasource.username=postgres
+spring.datasource.password=admin
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=false
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Flyway
+spring.flyway.enabled=true
+spring.flyway.locations=classpath:db/migration
+
+# JWT
+jwt.secret=your_super_secret_key_min_32_chars_long_here
+jwt.expiry-ms=604800000
+
+# Admin
+app.admin.email=your-admin@email.com
+
+# Frontend URL for OAuth redirect
+app.frontend.url=http://localhost:5173
+
+# Cloudinary (image uploads for rich text notes)
+# Get credentials from: https://console.cloudinary.com/settings/api-keys
+cloudinary.cloud-name=${CLOUDINARY_CLOUD_NAME:}
+cloudinary.api-key=${CLOUDINARY_API_KEY:}
+cloudinary.api-secret=${CLOUDINARY_API_SECRET:}
+
+# Brevo (Sendinblue) Email
+# Get API key from: https://app.brevo.com/settings/keys/api
+brevo.api-key=${BREVO_API_KEY:}
+brevo.sender-email=noreply@algolog.app
+brevo.sender-name=AlgoLog
+# Set to your Brevo template ID after creating it, or 0 to use inline HTML fallback
+brevo.template-id=${BREVO_TEMPLATE_ID:0}
+
+# =====================================
+# OAuth2 Configuration
+# =====================================
+
+# Google OAuth2
+# Get credentials from: https://console.cloud.google.com/apis/credentials
+spring.security.oauth2.client.registration.google.client-id=YOUR_GOOGLE_CLIENT_ID_HERE
+spring.security.oauth2.client.registration.google.client-secret=YOUR_GOOGLE_CLIENT_SECRET_HERE
+spring.security.oauth2.client.registration.google.scope=profile,email
+spring.security.oauth2.client.registration.google.redirect-uri={baseUrl}/login/oauth2/code/{registrationId}
+
+# GitHub OAuth2
+# Get credentials from: https://github.com/settings/developers
+spring.security.oauth2.client.registration.github.client-id=YOUR_GITHUB_CLIENT_ID_HERE
+spring.security.oauth2.client.registration.github.client-secret=YOUR_GITHUB_CLIENT_SECRET_HERE
+spring.security.oauth2.client.registration.github.scope=read:user,user:email
+spring.security.oauth2.client.registration.github.redirect-uri={baseUrl}/login/oauth2/code/{registrationId}
+
+# =====================================
+# Production Configuration Notes
+# =====================================
+# For production:
+# 1. Update app.frontend.url to your production frontend URL
+# 2. Use environment variables for secrets:
+#    - ${GOOGLE_CLIENT_ID}
+#    - ${GOOGLE_CLIENT_SECRET}
+#    - ${GITHUB_CLIENT_ID}
+#    - ${GITHUB_CLIENT_SECRET}
+# 3. Update OAuth redirect URIs in Google Cloud Console and GitHub

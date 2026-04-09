@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd.exe //c \".\\\\mvnw.cmd compile -Dmaven.compiler.proc=none\")",
+      "Bash(cmd.exe //c \".\\\\mvnw.cmd dependency:tree -Dincludes=org.projectlombok:lombok\")",
+      "WebSearch",
+      "WebFetch(domain:projectlombok.org)",
+      "WebFetch(domain:mvnrepository.com)",
+      "Bash(xargs grep:*)"
+    ]
+  }
+}
