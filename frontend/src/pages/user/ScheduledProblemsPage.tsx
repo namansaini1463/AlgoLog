@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { revisionsApi, type RevisionItem } from '../../api/revisions';
+import { revisionsApi } from '../../api/revisions';
 import TopBar from '../../components/layout/TopBar';
 import Badge, { difficultyVariant } from '../../components/ui/Badge';
 import Select from '../../components/ui/Select';
-import Button from '../../components/ui/Button';
 import Spinner from '../../components/ui/Spinner';
 import { cn } from '../../utils/cn';
 

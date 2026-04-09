@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { revisionsApi, type RevisionItem } from '../../api/revisions';
+import { revisionsApi } from '../../api/revisions';
 import TopBar from '../../components/layout/TopBar';
 import RevisionCard from '../../components/revision/RevisionCard';
 import Spinner from '../../components/ui/Spinner';

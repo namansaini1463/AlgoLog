@@ -117,7 +117,9 @@ export default function TopicBreakdown() {
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                   }}
                   cursor={{ fill: 'rgba(127, 119, 221, 0.08)' }}
-                  formatter={(value: number) => [`${value} problems`, 'Count']}
+                  formatter={(value: any) =>
+                    value !== undefined ? [`${value} problems`, 'Count'] : ['', '']
+                  }
                 />
                 <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={36} animationDuration={600}>
                   {chartData.map((_, index) => (
