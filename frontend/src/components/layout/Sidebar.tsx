@@ -9,8 +9,9 @@ const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: '📊' },
   { to: '/problems', label: 'All Problems Solved', icon: '📋' },
   { to: '/revisions', label: 'Revision Queue', icon: '🔄' },
+  { to: '/timer', label: 'Focus Timer', icon: '⏱️' },
   { to: '/browse', label: 'Browse Bank', icon: '🔍' },
-  { to: '/problems/add', label: 'Add Problem', icon: '➕' },
+  { to: '/problems/add', label: 'Log Problem', icon: '➕' },
   { to: '/settings', label: 'Settings', icon: '⚙️' },
 ];
 

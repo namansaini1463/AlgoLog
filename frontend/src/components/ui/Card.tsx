@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { forwardRef, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 
 interface CardProps {
@@ -6,9 +6,10 @@ interface CardProps {
   className?: string;
 }
 
-export default function Card({ children, className }: CardProps) {
+const Card = forwardRef<HTMLDivElement, CardProps>(function Card({ children, className }, ref) {
   return (
     <div
+      ref={ref}
       className={cn(
         'rounded-xl bg-white p-4 sm:p-5 shadow-sm border border-gray-200 transition-all duration-200',
         'hover:shadow-md hover:border-gray-300',
@@ -19,4 +20,6 @@ export default function Card({ children, className }: CardProps) {
       {children}
     </div>
   );
-}
+});
+
+export default Card;
