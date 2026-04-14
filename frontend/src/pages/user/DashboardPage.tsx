@@ -9,6 +9,9 @@ import ActivityHeatmap from '../../components/dashboard/ActivityHeatmap';
 import TopicBreakdown from '../../components/dashboard/TopicBreakdown';
 import RevisionCard from '../../components/revision/RevisionCard';
 import Card from '../../components/ui/Card';
+import NotificationBanner from '../../components/ui/NotificationBanner';
+import DailyChecklist from '../../components/dashboard/DailyChecklist';
+import QuickTimer from '../../components/dashboard/QuickTimer';
 
 export default function DashboardPage() {
   const queryClient = useQueryClient();
@@ -91,6 +94,8 @@ export default function DashboardPage() {
     <div>
       <TopBar title="Dashboard" showAddButton />
 
+      <NotificationBanner />
+
       {/* Personalized Welcome Section */}
       <div className="mb-6 rounded-xl bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 dark:from-primary/20 dark:via-purple-500/20 dark:to-pink-500/20 p-5 sm:p-6 border border-primary/20 dark:border-primary/30 shadow-sm">
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
@@ -108,6 +113,12 @@ export default function DashboardPage() {
         <StatCard label="Due Today" value={dueTodayCount} icon="📅" color="bg-amber-100 dark:bg-amber-900/20" />
         <StatCard label="Current Streak" value={`${streak?.currentStreak ?? 0}d`} icon="🔥" color="bg-orange-100 dark:bg-orange-900/20" />
         <StatCard label="Overdue" value={overdueCount} icon="⚠️" color="bg-red-100 dark:bg-red-900/20" />
+      </div>
+
+      {/* Quick Timer + Daily Checklist */}
+      <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <QuickTimer />
+        <DailyChecklist />
       </div>
 
       {/* Two-column: Revisions + Topic breakdown */}

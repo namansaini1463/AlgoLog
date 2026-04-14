@@ -43,7 +43,7 @@ interface MonthData {
   weeks: (HeatmapEntry | null)[][]; 
 }
 
-function groupByMonth(entries: HeatmapEntry[]): MonthData[] {
+function groupByMonth(entries: HeatmapEntry[], monthsBack: number): MonthData[] {
   if (entries.length === 0) return [];
 
   const lookup = new Map<string, HeatmapEntry>();
@@ -52,7 +52,7 @@ function groupByMonth(entries: HeatmapEntry[]): MonthData[] {
   }
 
   const today = new Date();
-  const start = new Date(today.getFullYear(), today.getMonth() - 5, 1);
+  const start = new Date(today.getFullYear(), today.getMonth() - (monthsBack - 1), 1);
 
   const months: MonthData[] = [];
   const current = new Date(start);
@@ -142,8 +142,35 @@ function HeatmapTooltip({ data }: { data: TooltipData }) {
   );
 }
 
+function useContainerWidth(ref: React.RefObject<HTMLElement | null>) {
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setWidth(entry.contentRect.width);
+      }
+    });
+    ro.observe(el);
+    setWidth(el.clientWidth);
+    return () => ro.disconnect();
+  }, [ref]);
+  return width;
+}
+
+function getMonthsForWidth(width: number): number {
+  if (width >= 1100) return 12;
+  if (width >= 820) return 9;
+  if (width >= 540) return 6;
+  return 3;
+}
+
 export default function ActivityHeatmap() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef);
+  const monthsToShow = getMonthsForWidth(containerWidth);
 
   const { data: entries = [] } = useQuery({
     queryKey: ['heatmap'],
@@ -152,7 +179,7 @@ export default function ActivityHeatmap() {
 
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
 
-  const months = useMemo(() => groupByMonth(entries), [entries]);
+  const months = useMemo(() => groupByMonth(entries, monthsToShow), [entries, monthsToShow]);
 
   const maxCount = useMemo(
     () => entries.reduce((m, e) => Math.max(m, e.count), 0),
@@ -187,10 +214,10 @@ export default function ActivityHeatmap() {
   }, []);
 
   return (
-    <Card>
+    <Card ref={containerRef}>
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-          Activity (Last 6 Months)
+          Activity (Last {monthsToShow} Months)
         </h3>
         <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
           <span>

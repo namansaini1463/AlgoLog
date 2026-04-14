@@ -6,6 +6,12 @@ import Button from '../../components/ui/Button';
 import Spinner from '../../components/ui/Spinner';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
+import {
+  isNotificationSupported,
+  getNotificationPermission,
+  requestNotificationPermission,
+} from '../../services/notifications';
+import { canInstallPWA, installPWA, isPWAInstalled } from '../../services/pwa';
 
 const TIMEZONES = [
   'Asia/Kolkata',
@@ -20,6 +26,91 @@ const TIMEZONES = [
   'Australia/Sydney',
   'Pacific/Auckland',
 ];
+
+function PWAInstallCard() {
+  const [installable, setInstallable] = useState(canInstallPWA());
+  const installed = isPWAInstalled();
+
+  useEffect(() => {
+    const onInstallable = () => setInstallable(true);
+    const onInstalled = () => setInstallable(false);
+    window.addEventListener('pwa-installable', onInstallable);
+    window.addEventListener('pwa-installed', onInstalled);
+    return () => {
+      window.removeEventListener('pwa-installable', onInstallable);
+      window.removeEventListener('pwa-installed', onInstalled);
+    };
+  }, []);
+
+  if (installed) {
+    return (
+      <Card>
+        <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">App Installation</h3>
+        <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+          <span>✓</span>
+          <span>AlgoLog is installed as an app</span>
+        </div>
+      </Card>
+    );
+  }
+
+  if (!installable) return null;
+
+  return (
+    <Card>
+      <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">Install App</h3>
+      <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
+        Install AlgoLog as an app for quick access and offline support.
+      </p>
+      <Button size="sm" onClick={() => installPWA()}>
+        Install AlgoLog
+      </Button>
+    </Card>
+  );
+}
+
+function PushNotificationCard() {
+  const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>(
+    getNotificationPermission()
+  );
+
+  if (!isNotificationSupported()) {
+    return (
+      <Card>
+        <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">Push Notifications</h3>
+        <p className="text-xs text-gray-500">Your browser does not support push notifications.</p>
+      </Card>
+    );
+  }
+
+  const handleRequest = async () => {
+    const result = await requestNotificationPermission();
+    setPermission(result);
+  };
+
+  return (
+    <Card>
+      <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">Push Notifications</h3>
+      <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
+        Get notified when problems are due for revision.
+      </p>
+      {permission === 'granted' ? (
+        <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+          <span>✓</span>
+          <span>Notifications enabled</span>
+        </div>
+      ) : permission === 'denied' ? (
+        <p className="text-xs text-red-500">
+          Notifications are blocked. Please enable them in your browser settings.
+        </p>
+      ) : (
+        <Button size="sm" onClick={handleRequest}>
+          Enable Notifications
+        </Button>
+      )}
+    </Card>
+  );
+}
 
 export default function SettingsPage() {
   const queryClient = useQueryClient();
@@ -64,6 +155,12 @@ export default function SettingsPage() {
         <div className="flex justify-center py-12"><Spinner className="h-8 w-8" /></div>
       ) : (
         <div className="max-w-lg space-y-6">
+          {/* PWA Install */}
+          <PWAInstallCard />
+
+          {/* Push Notifications */}
+          <PushNotificationCard />
+
           <Card>
             <h3 className="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
               Notification Preferences

@@ -14,10 +14,8 @@ const getInitialTheme = (): Theme => {
 
 export const useThemeStore = create<ThemeState>((set, get) => {
   const initial = getInitialTheme();
-  // Apply on load
-  if (initial === 'dark') {
-    document.documentElement.classList.add('dark');
-  }
+  // Apply on load — explicitly add or remove so class always matches state
+  document.documentElement.classList.toggle('dark', initial === 'dark');
 
   return {
     theme: initial,

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { bankApi, type ProblemBank } from '../../api/bank';
@@ -12,6 +12,7 @@ import ConfidencePicker from '../../components/ui/ConfidencePicker';
 import Select from '../../components/ui/Select';
 import TagPicker from '../../components/ui/TagPicker';
 import Badge, { difficultyVariant } from '../../components/ui/Badge';
+import Spinner from '../../components/ui/Spinner';
 import { cn } from '../../utils/cn';
 import { detectPlatform, ALL_PLATFORMS, type Platform } from '../../utils/detectPlatform';
 
@@ -23,7 +24,19 @@ export default function AddProblemPage() {
 
   // Bank search state
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [page, setPage] = useState(0);
+  const [difficulty, setDifficulty] = useState('');
   const [selected, setSelected] = useState<ProblemBank | null>(null);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(0); // Reset to first page on search
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   // Custom problem state
   const [customTitle, setCustomTitle] = useState('');
@@ -41,10 +54,15 @@ export default function AddProblemPage() {
   const [detailedNotes, setDetailedNotes] = useState('');
   const [timeTakenMins, setTimeTakenMins] = useState('');
 
-  const { data: results } = useQuery({
-    queryKey: ['bank-search', search],
-    queryFn: () => bankApi.browse({ search, size: 10 }).then((r) => r.data),
-    enabled: mode === 'bank' && search.length >= 2,
+  const { data: results, isLoading: isLoadingBank } = useQuery({
+    queryKey: ['bank-search', debouncedSearch, page, difficulty],
+    queryFn: () => {
+      const params: Record<string, string | number> = { page, size: 20 };
+      if (debouncedSearch) params.search = debouncedSearch;
+      if (difficulty) params.difficulty = difficulty;
+      return bankApi.browse(params).then((r) => r.data);
+    },
+    enabled: mode === 'bank',
   });
 
   const { data: bankTags } = useQuery({
@@ -116,7 +134,7 @@ export default function AddProblemPage() {
         </button>
       </div>
 
-      <div className="max-w-xl space-y-5">
+      <div className={cn('space-y-5', mode === 'custom' ? 'max-w-xl' : 'max-w-2xl')}>
         {/* Problem identification */}
         {mode === 'custom' ? (
           <>
@@ -202,34 +220,106 @@ export default function AddProblemPage() {
           </>
         ) : !selected ? (
           <div>
-            <Input
-              label="Search the problem bank"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Type at least 2 characters..."
-            />
-            {results?.content && results.content.length > 0 && (
-              <div className="mt-2 space-y-1 rounded-lg border border-gray-200 bg-surface-light p-2 dark:border-gray-700 dark:bg-surface-dark">
-                {results.content.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => setSelected(p)}
-                    className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-                  >
-                    <span className="font-medium text-gray-900 dark:text-gray-100">{p.title}</span>
-                    <Badge variant={difficultyVariant(p.difficulty)}>{p.difficulty}</Badge>
-                    <Badge variant="topic">{p.topic}</Badge>
-                  </button>
-                ))}
-              </div>
+            <div className="mb-4 flex flex-wrap gap-3">
+              <Input
+                placeholder="Search by title..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full sm:w-64"
+              />
+              <Select
+                value={difficulty}
+                onChange={(e) => { setDifficulty(e.target.value); setPage(0); }}
+                options={[
+                  { value: '', label: 'All Difficulties' },
+                  { value: 'EASY', label: 'Easy' },
+                  { value: 'MEDIUM', label: 'Medium' },
+                  { value: 'HARD', label: 'Hard' },
+                ]}
+              />
+            </div>
+            {isLoadingBank ? (
+              <div className="flex justify-center py-12"><Spinner className="h-8 w-8" /></div>
+            ) : results?.content && results.content.length > 0 ? (
+              <>
+                <div className="space-y-2">
+                  {results.content.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => setSelected(p)}
+                      className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg border border-gray-200 bg-surface-light p-3 sm:p-4 text-left hover:border-primary/40 hover:bg-primary/5 dark:border-gray-700 dark:bg-surface-dark dark:hover:border-primary/40"
+                    >
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-medium text-gray-900 dark:text-gray-100">{p.title}</span>
+                          <Badge variant={difficultyVariant(p.difficulty)}>{p.difficulty}</Badge>
+                          <Badge variant="topic">{p.topic}</Badge>
+                          {p.platform && (
+                            <span className="text-xs text-primary">
+                              {p.platform}
+                            </span>
+                          )}
+                        </div>
+                        {p.tags?.length > 0 && (
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {p.tags.map((t) => (
+                              <Badge key={t} className="text-[10px]">{t}</Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <span className="shrink-0 self-start sm:self-center text-xs font-medium text-primary">
+                        Select →
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                {results.totalPages > 1 && (
+                  <div className="mt-6 flex justify-center gap-2">
+                    <button
+                      onClick={() => setPage((p) => Math.max(0, p - 1))}
+                      disabled={page === 0}
+                      className="rounded-lg px-3 py-1 text-sm disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      Previous
+                    </button>
+                    <span className="px-3 py-1 text-sm text-gray-500">
+                      {page + 1} / {results.totalPages}
+                    </span>
+                    <button
+                      onClick={() => setPage((p) => Math.min(results.totalPages - 1, p + 1))}
+                      disabled={page >= results.totalPages - 1}
+                      className="rounded-lg px-3 py-1 text-sm disabled:opacity-40 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="py-12 text-center text-gray-400">No problems found.</p>
             )}
           </div>
         ) : (
-          <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
-            <span className="font-medium text-gray-900 dark:text-gray-100">{selected.title}</span>
-            <Badge variant={difficultyVariant(selected.difficulty)}>{selected.difficulty}</Badge>
-            <Badge variant="topic">{selected.topic}</Badge>
-            <button onClick={() => setSelected(null)} className="ml-auto text-xs text-gray-400 hover:text-gray-600">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg border border-primary/30 bg-primary/5 p-3 sm:p-4">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-medium text-gray-900 dark:text-gray-100">{selected.title}</span>
+                <Badge variant={difficultyVariant(selected.difficulty)}>{selected.difficulty}</Badge>
+                <Badge variant="topic">{selected.topic}</Badge>
+                {selected.platform && (
+                  <span className="text-xs text-primary">{selected.platform}</span>
+                )}
+              </div>
+              {selected.tags?.length > 0 && (
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {selected.tags.map((t) => (
+                    <Badge key={t} className="text-[10px]">{t}</Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button onClick={() => setSelected(null)} className="shrink-0 self-start sm:self-center text-xs text-gray-400 hover:text-gray-600">
               Change
             </button>
           </div>
