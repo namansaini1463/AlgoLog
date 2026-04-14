@@ -153,7 +153,6 @@ export default function LandingPage() {
           {/* Dashboard mockup */}
           <div className="relative mx-auto mt-14 sm:mt-16 max-w-3xl">
             <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-surface-dark shadow-2xl shadow-gray-200/50 dark:shadow-black/30 overflow-hidden">
-              {/* Fake browser chrome */}
               <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 px-4 py-3 bg-gray-50 dark:bg-gray-900/50">
                 <div className="flex gap-1.5">
                   <div className="h-3 w-3 rounded-full bg-red-400" />
