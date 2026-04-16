@@ -79,13 +79,21 @@ public class UserProblemService {
 
         userProblem = userProblemRepository.save(userProblem);
 
-        // Create initial revision entry
+        // Create initial revision entry — scale interval by confidence
+        int conf = request.getConfidence() != null ? request.getConfidence() : 3;
+        int initialInterval;
+        if (conf < 3) {
+            initialInterval = 1;
+        } else {
+            initialInterval = 1 + (conf - 3); // 3→1, 4→2, 5→3
+        }
+
         Revision revision = Revision.builder()
                 .userProblem(userProblem)
-                .intervalDays(1)
+                .intervalDays(initialInterval)
                 .repetitionCount(0)
                 .easeFactor(2.5)
-                .nextDueAt(LocalDateTime.now().plusDays(1))
+                .nextDueAt(LocalDateTime.now().plusDays(initialInterval))
                 .build();
         revisionRepository.save(revision);
 

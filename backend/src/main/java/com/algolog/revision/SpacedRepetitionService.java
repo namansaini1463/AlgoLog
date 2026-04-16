@@ -18,11 +18,11 @@ public class SpacedRepetitionService {
             intervalDays = 1;
             repetitionCount = 0;
         } else {
-            // Successful recall
+            // Successful recall — scale early intervals by confidence
             if (repetitionCount == 0) {
-                intervalDays = 1;
+                intervalDays = 1 + (confidence - 3); // 3→1, 4→2, 5→3
             } else if (repetitionCount == 1) {
-                intervalDays = 3;
+                intervalDays = 3 + (confidence - 3) * 2; // 3→3, 4→5, 5→7
             } else {
                 intervalDays = (int) Math.round(revision.getIntervalDays() * easeFactor);
             }
