@@ -3,6 +3,7 @@ package com.algolog.auth;
 import com.algolog.auth.dto.AuthResponse;
 import com.algolog.auth.dto.LoginRequest;
 import com.algolog.auth.dto.RegisterRequest;
+import com.algolog.category.UserCategoryService;
 import com.algolog.user.User;
 import com.algolog.user.UserRepository;
 import com.algolog.user.UserService;
@@ -17,6 +18,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final UserCategoryService userCategoryService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
@@ -39,6 +41,9 @@ public class AuthService {
                 .build();
 
         user = userRepository.save(user);
+
+        // Seed default categories (DSA, LLD, HLD) for the new user
+        userCategoryService.seedDefaults(user.getId());
 
         String token = jwtService.generateToken(user.getId(), user.getEmail(), user.getRole());
 

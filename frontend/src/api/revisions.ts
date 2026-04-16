@@ -17,6 +17,7 @@ export interface RevisionItem {
   userProblemId: string;
   revisionId: string;
   problemTitle: string;
+  category: string;
   difficulty: string;
   topic: string;
   tags: string[];

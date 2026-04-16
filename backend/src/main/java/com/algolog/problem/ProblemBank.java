@@ -49,6 +49,10 @@ public class ProblemBank {
     @Column(columnDefinition = "text")
     private String description;
 
+    @Column(nullable = false, length = 50)
+    @Builder.Default
+    private String category = "DSA";
+
     @Column(name = "is_published")
     @Builder.Default
     private Boolean isPublished = false;

@@ -1,4 +1,5 @@
 import { cn } from '../../utils/cn';
+import { useCategoryStore } from '../../store/categoryStore';
 
 interface BadgeProps {
   children: React.ReactNode;
@@ -29,6 +30,25 @@ export default function Badge({ children, variant = 'default', className }: Badg
       )}
     >
       {children}
+    </span>
+  );
+}
+
+/** Dynamic category badge — renders with the user's custom category color */
+export function CategoryBadge({ name, color }: { name: string; color?: string }) {
+  const getCategoryColor = useCategoryStore((s) => s.getCategoryColor);
+  const hex = color || getCategoryColor(name);
+
+  return (
+    <span
+      className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border transition-colors"
+      style={{
+        backgroundColor: `${hex}18`,
+        color: hex,
+        borderColor: `${hex}30`,
+      }}
+    >
+      {name}
     </span>
   );
 }

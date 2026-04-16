@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { activityApi } from '../../api/activity';
 import { revisionsApi, type RevisionItem } from '../../api/revisions';
 import { useAuthStore } from '../../store/authStore';
+import { useCategoryStore } from '../../store/categoryStore';
 import TopBar from '../../components/layout/TopBar';
 import StatCard from '../../components/dashboard/StatCard';
 import ActivityHeatmap from '../../components/dashboard/ActivityHeatmap';
@@ -16,6 +18,7 @@ import QuickTimer from '../../components/dashboard/QuickTimer';
 export default function DashboardPage() {
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
+  const { category } = useCategoryStore();
 
   const { data: streak } = useQuery({
     queryKey: ['streak'],
@@ -45,12 +48,11 @@ export default function DashboardPage() {
   });
 
   // Build a merged list of up to 5 items: flagged -> overdue -> due today
-  const dashboardRevisions: RevisionItem[] = [];
-  if (queue) {
-    dashboardRevisions.push(...queue.flagged);
-    dashboardRevisions.push(...queue.overdue);
-    dashboardRevisions.push(...queue.dueToday);
-  }
+  const dashboardRevisions: RevisionItem[] = useMemo(() => {
+    if (!queue) return [];
+    const all = [...queue.flagged, ...queue.overdue, ...queue.dueToday];
+    return category === 'ALL' ? all : all.filter((i) => i.category === category);
+  }, [queue, category]);
   const revisionItems = dashboardRevisions.slice(0, 5);
   const moreCount = dashboardRevisions.length - 5;
   const stats = queue?.stats;

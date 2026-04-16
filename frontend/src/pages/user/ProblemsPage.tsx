@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { problemsApi } from '../../api/problems';
 import { revisionsApi } from '../../api/revisions';
+import { useCategoryStore } from '../../store/categoryStore';
 import TopBar from '../../components/layout/TopBar';
 import ProblemCard from '../../components/problem/ProblemCard';
 import Spinner from '../../components/ui/Spinner';
@@ -11,11 +12,16 @@ const PAGE_SIZES = [10, 25, 50, 100] as const;
 export default function ProblemsPage() {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState<number>(25);
+  const { category } = useCategoryStore();
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['problems', page, pageSize],
-    queryFn: () => problemsApi.list({ page, size: pageSize }).then((r) => r.data),
+    queryKey: ['problems', page, pageSize, category],
+    queryFn: () => {
+      const params: Record<string, string | number> = { page, size: pageSize };
+      if (category !== 'ALL') params.category = category;
+      return problemsApi.list(params).then((r) => r.data);
+    },
   });
 
   const deleteMutation = useMutation({
@@ -61,6 +67,7 @@ export default function ProblemsPage() {
                 flaggedNote={p.flaggedNote}
                 onDelete={(id) => deleteMutation.mutate(id)}
                 onFlag={(id, isFlagged, note) => flagMutation.mutate({ id, isFlagged, note })}
+                onNotesUpdated={() => queryClient.invalidateQueries({ queryKey: ['problems'] })}
               />
             ))}
           </div>

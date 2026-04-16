@@ -50,6 +50,10 @@ public class UserProblem {
     @Column(name = "custom_tags", columnDefinition = "text[]")
     private List<String> customTags;
 
+    @Column(nullable = false, length = 50)
+    @Builder.Default
+    private String category = "DSA";
+
     @Column
     private Integer confidence;
 

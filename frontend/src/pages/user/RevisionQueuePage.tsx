@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { revisionsApi } from '../../api/revisions';
+import { revisionsApi, type RevisionItem } from '../../api/revisions';
+import { useCategoryStore } from '../../store/categoryStore';
 import TopBar from '../../components/layout/TopBar';
 import RevisionCard from '../../components/revision/RevisionCard';
 import Spinner from '../../components/ui/Spinner';
@@ -40,11 +41,28 @@ function StatChip({ label, value, active, onClick, color }: {
 export default function RevisionQueuePage() {
   const queryClient = useQueryClient();
   const [showUpcoming, setShowUpcoming] = useState(false);
+  const { category } = useCategoryStore();
 
-  const { data: queue, isLoading } = useQuery({
+  const { data: rawQueue, isLoading } = useQuery({
     queryKey: ['revisions', 'queue'],
     queryFn: () => revisionsApi.queue().then((r) => r.data),
   });
+
+  // Client-side category filter
+  const filterByCategory = (items: RevisionItem[]) =>
+    category === 'ALL' ? items : items.filter((i) => i.category === category);
+
+  const queue = useMemo(() => {
+    if (!rawQueue) return null;
+    return {
+      ...rawQueue,
+      flagged: filterByCategory(rawQueue.flagged),
+      overdue: filterByCategory(rawQueue.overdue),
+      dueToday: filterByCategory(rawQueue.dueToday),
+      upcoming7Days: filterByCategory(rawQueue.upcoming7Days),
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawQueue, category]);
 
   const completeMutation = useMutation({
     mutationFn: ({ id, confidence }: { id: string; confidence: number }) =>

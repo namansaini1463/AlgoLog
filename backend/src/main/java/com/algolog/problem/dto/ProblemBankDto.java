@@ -24,6 +24,7 @@ public class ProblemBankDto {
     private String platform;
     private String platformUrl;
     private String description;
+    private String category;
     private Boolean isPublished;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

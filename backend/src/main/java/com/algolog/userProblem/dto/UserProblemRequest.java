@@ -17,6 +17,9 @@ public class UserProblemRequest {
     // Option 1: from bank
     private UUID bankProblemId;
 
+    // Category: DSA, LLD, or HLD (defaults to DSA if null)
+    private String category;
+
     // Option 2: custom problem
     private String customTitle;
     private String customUrl;
@@ -29,6 +32,7 @@ public class UserProblemRequest {
 
     private String oneLiner;
     private String detailedNotes;
+    @Min(0)
     private Integer timeTakenMins;
     private Boolean hintsUsed;
 }

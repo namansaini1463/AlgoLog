@@ -21,7 +21,10 @@ public class TopicController {
     private final TopicService topicService;
 
     @GetMapping
-    public ResponseEntity<List<TopicDto>> getAll() {
+    public ResponseEntity<List<TopicDto>> getAll(@RequestParam(required = false) String category) {
+        if (category != null && !category.isBlank()) {
+            return ResponseEntity.ok(topicService.getByCategory(category));
+        }
         return ResponseEntity.ok(topicService.getAll());
     }
 

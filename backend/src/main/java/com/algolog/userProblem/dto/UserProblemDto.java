@@ -19,6 +19,7 @@ public class UserProblemDto {
 
     private UUID id;
     private UUID bankProblemId;
+    private String category;
     private ProblemBankDto problem;
     private String customTitle;
     private String customUrl;

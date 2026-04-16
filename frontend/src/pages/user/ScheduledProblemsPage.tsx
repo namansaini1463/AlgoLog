@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { revisionsApi } from '../../api/revisions';
 import TopBar from '../../components/layout/TopBar';
-import Badge, { difficultyVariant } from '../../components/ui/Badge';
+import Badge, { difficultyVariant, CategoryBadge } from '../../components/ui/Badge';
 import Select from '../../components/ui/Select';
 import Spinner from '../../components/ui/Spinner';
 import { cn } from '../../utils/cn';
@@ -132,6 +132,7 @@ export default function ScheduledProblemsPage() {
               <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
                   <th className="px-4 py-3 font-medium">Problem</th>
+                  <th className="px-4 py-3 font-medium">Category</th>
                   <th className="px-4 py-3 font-medium">Difficulty</th>
                   <th className="px-4 py-3 font-medium">Topic</th>
                   <th className="px-4 py-3 font-medium">Next Due</th>
@@ -155,6 +156,9 @@ export default function ScheduledProblemsPage() {
                             className="text-xs text-primary hover:underline">{item.platform}</a>
                         )}
                       </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <CategoryBadge name={item.category} />
                     </td>
                     <td className="px-4 py-3">
                       {item.difficulty && <Badge variant={difficultyVariant(item.difficulty)}>{item.difficulty}</Badge>}

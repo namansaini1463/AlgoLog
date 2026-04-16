@@ -19,6 +19,7 @@ public class RevisionItemDto {
     private UUID userProblemId;
     private UUID revisionId;
     private String problemTitle;
+    private String category;
     private String difficulty;
     private String topic;
     private List<String> tags;

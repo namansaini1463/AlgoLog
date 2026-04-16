@@ -19,13 +19,19 @@ public class TopicService {
         return topicRepository.findAll().stream().map(this::toDto).toList();
     }
 
+    public List<TopicDto> getByCategory(String category) {
+        return topicRepository.findByCategory(category).stream().map(this::toDto).toList();
+    }
+
     public TopicDto create(TopicRequest request) {
-        if (topicRepository.existsByName(request.getName())) {
-            throw new IllegalArgumentException("Topic already exists");
+        String category = request.getCategory() != null ? request.getCategory() : "DSA";
+        if (topicRepository.existsByNameAndCategory(request.getName(), category)) {
+            throw new IllegalArgumentException("Topic already exists in this category");
         }
         Topic topic = Topic.builder()
                 .name(request.getName())
                 .colorHex(request.getColorHex())
+                .category(category)
                 .build();
         return toDto(topicRepository.save(topic));
     }
@@ -35,6 +41,9 @@ public class TopicService {
                 .orElseThrow(() -> new ResourceNotFoundException("Topic not found"));
         topic.setName(request.getName());
         topic.setColorHex(request.getColorHex());
+        if (request.getCategory() != null) {
+            topic.setCategory(request.getCategory());
+        }
         return toDto(topicRepository.save(topic));
     }
 
@@ -50,6 +59,7 @@ public class TopicService {
                 .id(topic.getId())
                 .name(topic.getName())
                 .colorHex(topic.getColorHex())
+                .category(topic.getCategory())
                 .build();
     }
 }

@@ -14,4 +14,5 @@ public class TopicRequest {
     private String name;
 
     private String colorHex;
+    private String category;
 }

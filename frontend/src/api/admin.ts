@@ -10,12 +10,14 @@ export interface ProblemBankRequest {
   platform?: string;
   platformUrl?: string;
   description?: string;
+  category?: string;
 }
 
 export interface TopicDto {
   id: string;
   name: string;
   colorHex: string;
+  category: string;
 }
 
 export interface UserSummary {
@@ -58,11 +60,11 @@ export const adminApi = {
     api.patch<ProblemBank>(`/api/admin/bank/${id}/publish`),
 
   // Topics
-  getTopics: () =>
-    api.get<TopicDto[]>('/api/admin/topics'),
-  createTopic: (data: { name: string; colorHex?: string }) =>
+  getTopics: (params?: Record<string, string>) =>
+    api.get<TopicDto[]>('/api/admin/topics', { params }),
+  createTopic: (data: { name: string; colorHex?: string; category?: string }) =>
     api.post<TopicDto>('/api/admin/topics', data),
-  updateTopic: (id: string, data: { name: string; colorHex?: string }) =>
+  updateTopic: (id: string, data: { name: string; colorHex?: string; category?: string }) =>
     api.put<TopicDto>(`/api/admin/topics/${id}`, data),
   deleteTopic: (id: string) =>
     api.delete(`/api/admin/topics/${id}`),

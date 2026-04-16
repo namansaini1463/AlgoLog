@@ -167,6 +167,7 @@ public class RevisionService {
         List<String> tags = bp != null ? bp.getTags() : up.getCustomTags();
         String platform = bp != null ? bp.getPlatform() : null;
         String platformUrl = bp != null ? bp.getPlatformUrl() : up.getCustomUrl();
+        String category = up.getCategory();
 
         LocalDate today = LocalDate.now();
         LocalDate dueDate = revision.getNextDueAt().toLocalDate();
@@ -187,6 +188,7 @@ public class RevisionService {
                 .userProblemId(up.getId())
                 .revisionId(revision.getId())
                 .problemTitle(title)
+                .category(category)
                 .difficulty(difficulty)
                 .topic(topic)
                 .tags(tags)

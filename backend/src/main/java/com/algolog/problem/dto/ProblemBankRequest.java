@@ -2,6 +2,7 @@ package com.algolog.problem.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,4 +30,7 @@ public class ProblemBankRequest {
     private String platform;
     private String platformUrl;
     private String description;
+
+    @Size(max = 50, message = "Category name must not exceed 50 characters")
+    private String category;
 }
