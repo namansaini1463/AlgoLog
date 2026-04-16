@@ -17,8 +17,8 @@ public class ProblemBankService {
 
     private final ProblemBankRepository problemBankRepository;
 
-    public Page<ProblemBankDto> getPublishedProblems(String topic, String difficulty, String search, Pageable pageable) {
-        return problemBankRepository.findPublishedWithFilters(topic, difficulty, search, pageable)
+    public Page<ProblemBankDto> getPublishedProblems(String topic, String difficulty, String category, String search, Pageable pageable) {
+        return problemBankRepository.findPublishedWithFilters(topic, difficulty, category, search, pageable)
                 .map(this::toDto);
     }
 
@@ -59,6 +59,7 @@ public class ProblemBankService {
                 .platform(request.getPlatform())
                 .platformUrl(request.getPlatformUrl())
                 .description(request.getDescription())
+                .category(request.getCategory() != null ? request.getCategory() : "DSA")
                 .isPublished(false)
                 .build();
 
@@ -81,6 +82,9 @@ public class ProblemBankService {
         problem.setPlatform(request.getPlatform());
         problem.setPlatformUrl(request.getPlatformUrl());
         problem.setDescription(request.getDescription());
+        if (request.getCategory() != null) {
+            problem.setCategory(request.getCategory());
+        }
         return toDto(problemBankRepository.save(problem));
     }
 
@@ -112,6 +116,7 @@ public class ProblemBankService {
                 .platform(problem.getPlatform())
                 .platformUrl(problem.getPlatformUrl())
                 .description(problem.getDescription())
+                .category(problem.getCategory())
                 .isPublished(problem.getIsPublished())
                 .createdAt(problem.getCreatedAt())
                 .updatedAt(problem.getUpdatedAt())

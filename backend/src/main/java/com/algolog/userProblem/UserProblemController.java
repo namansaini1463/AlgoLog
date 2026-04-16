@@ -28,8 +28,9 @@ public class UserProblemController {
     @GetMapping
     public ResponseEntity<Page<UserProblemDto>> getProblems(
             @AuthenticationPrincipal UUID userId,
+            @RequestParam(required = false) String category,
             @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(userProblemService.getUserProblems(userId, pageable));
+        return ResponseEntity.ok(userProblemService.getUserProblems(userId, category, pageable));
     }
 
     @PostMapping

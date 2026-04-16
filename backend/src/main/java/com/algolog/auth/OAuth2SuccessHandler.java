@@ -1,5 +1,6 @@
 package com.algolog.auth;
 
+import com.algolog.category.UserCategoryService;
 import com.algolog.user.User;
 import com.algolog.user.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final UserCategoryService userCategoryService;
 
     @Value("${app.frontend.url}")
     private String frontendUrl;
@@ -119,6 +121,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .oauthId(oauthId)
                 .build();
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        userCategoryService.seedDefaults(savedUser.getId());
+        return savedUser;
     }
 }

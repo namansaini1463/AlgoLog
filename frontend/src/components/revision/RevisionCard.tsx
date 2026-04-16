@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { RevisionItem } from '../../api/revisions';
-import Badge, { difficultyVariant } from '../ui/Badge';
+import Badge, { difficultyVariant, CategoryBadge } from '../ui/Badge';
 import Button from '../ui/Button';
 import RichTextViewer from '../ui/RichTextViewer';
 import { cn } from '../../utils/cn';
@@ -90,6 +90,9 @@ export default function RevisionCard({
             <span className="font-medium text-gray-900 dark:text-gray-100 truncate">
               {item.problemTitle}
             </span>
+            {item.category && (
+              <CategoryBadge name={item.category} />
+            )}
             {item.difficulty && (
               <Badge variant={difficultyVariant(item.difficulty)}>{item.difficulty}</Badge>
             )}

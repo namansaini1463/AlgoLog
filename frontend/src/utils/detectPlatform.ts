@@ -1,4 +1,4 @@
-export type Platform = 'LeetCode' | 'GeeksForGeeks' | 'CodingNinjas' | 'TUF+' | 'Other';
+export type Platform = 'LeetCode' | 'GeeksForGeeks' | 'CodingNinjas' | 'TUF+' | 'YouTube' | 'Educative' | 'DesignGurus' | 'Other';
 
 const PLATFORM_PATTERNS: { platform: Platform; patterns: RegExp[] }[] = [
   {
@@ -16,6 +16,18 @@ const PLATFORM_PATTERNS: { platform: Platform; patterns: RegExp[] }[] = [
   {
     platform: 'TUF+',
     patterns: [/takeuforward\.org/i, /tuf\+/i],
+  },
+  {
+    platform: 'YouTube',
+    patterns: [/youtube\.com/i, /youtu\.be/i],
+  },
+  {
+    platform: 'Educative',
+    patterns: [/educative\.io/i],
+  },
+  {
+    platform: 'DesignGurus',
+    patterns: [/designgurus\.io/i, /designgurus\.org/i],
   },
 ];
 
@@ -37,4 +49,4 @@ export function detectPlatform(url: string): Platform | null {
   return 'Other';
 }
 
-export const ALL_PLATFORMS: Platform[] = ['LeetCode', 'GeeksForGeeks', 'CodingNinjas', 'TUF+', 'Other'];
+export const ALL_PLATFORMS: Platform[] = ['LeetCode', 'GeeksForGeeks', 'CodingNinjas', 'TUF+', 'YouTube', 'Educative', 'DesignGurus', 'Other'];

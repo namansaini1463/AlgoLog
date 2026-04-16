@@ -4,6 +4,7 @@ import type { Page, ProblemBank } from './bank';
 export interface UserProblem {
   id: string;
   bankProblemId: string | null;
+  category: string;
   problem: ProblemBank | null;
   customTitle: string | null;
   customUrl: string | null;
@@ -23,6 +24,7 @@ export interface UserProblem {
 
 export interface LogProblemData {
   bankProblemId?: string;
+  category?: string;
   customTitle?: string;
   customUrl?: string;
   customTopic?: string;

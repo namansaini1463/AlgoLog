@@ -4,6 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { bankApi, type ProblemBank } from '../../api/bank';
 import { problemsApi } from '../../api/problems';
 import { topicsApi } from '../../api/topics';
+import { useCategoryStore } from '../../store/categoryStore';
 import TopBar from '../../components/layout/TopBar';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
@@ -20,7 +21,10 @@ type Mode = 'bank' | 'custom';
 
 export default function AddProblemPage() {
   const navigate = useNavigate();
+  const { category: globalCategory, categories } = useCategoryStore();
   const [mode, setMode] = useState<Mode>('custom');
+  const defaultCategory = globalCategory !== 'ALL' ? globalCategory : (categories[0]?.name || 'DSA');
+  const [problemCategory, setProblemCategory] = useState<string>(defaultCategory);
 
   // Bank search state
   const [search, setSearch] = useState('');
@@ -55,9 +59,9 @@ export default function AddProblemPage() {
   const [timeTakenMins, setTimeTakenMins] = useState('');
 
   const { data: results, isLoading: isLoadingBank } = useQuery({
-    queryKey: ['bank-search', debouncedSearch, page, difficulty],
+    queryKey: ['bank-search', debouncedSearch, page, difficulty, problemCategory],
     queryFn: () => {
-      const params: Record<string, string | number> = { page, size: 20 };
+      const params: Record<string, string | number> = { page, size: 20, category: problemCategory };
       if (debouncedSearch) params.search = debouncedSearch;
       if (difficulty) params.difficulty = difficulty;
       return bankApi.browse(params).then((r) => r.data);
@@ -71,8 +75,8 @@ export default function AddProblemPage() {
   });
 
   const { data: topics } = useQuery({
-    queryKey: ['topics'],
-    queryFn: () => topicsApi.list().then((r) => r.data.map((t) => t.name)),
+    queryKey: ['topics', problemCategory],
+    queryFn: () => topicsApi.list({ category: problemCategory }).then((r) => r.data.map((t) => t.name)),
   });
 
   // Merge pre-seeded topics with existing bank tags (deduplicated)
@@ -83,12 +87,14 @@ export default function AddProblemPage() {
       if (mode === 'bank' && selected) {
         return problemsApi.log({
           bankProblemId: selected.id,
+          category: problemCategory,
           confidence,
           detailedNotes: detailedNotes || undefined,
           timeTakenMins: timeTakenMins ? parseInt(timeTakenMins) : undefined,
         });
       }
       return problemsApi.log({
+        category: problemCategory,
         customTitle,
         customUrl: customUrl || undefined,
         customTopic: customTags[0] || undefined,  // Set topic to first tag
@@ -107,6 +113,32 @@ export default function AddProblemPage() {
   return (
     <div>
       <TopBar title="Log a Problem" />
+
+      {/* Category selector */}
+      <div className="mb-4">
+        <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+        <div className="flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-800 w-fit overflow-x-auto">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => {
+                setProblemCategory(cat.name);
+                setSelected(null);
+                setPage(0);
+                setCustomTags([]);
+              }}
+              className={cn(
+                'rounded-md px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap',
+                problemCategory === cat.name
+                  ? 'bg-primary text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900 dark:text-gray-400'
+              )}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* Mode toggle */}
       <div className="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-800 w-fit">
@@ -139,20 +171,20 @@ export default function AddProblemPage() {
         {mode === 'custom' ? (
           <>
             <Input
-              label="Problem Name"
+              label="Problem / Topic Name"
               value={customTitle}
               onChange={(e) => setCustomTitle(e.target.value)}
-              placeholder="e.g. Two Sum"
+              placeholder={`e.g. ${problemCategory} problem or topic name`}
               required
             />
             <Input
-              label="Problem Link"
+              label="Problem / Resource Link"
               value={customUrl}
               onChange={(e) => {
                 setCustomUrl(e.target.value);
                 setCustomPlatformOverride(null); // reset override on new URL
               }}
-              placeholder="https://leetcode.com/problems/two-sum"
+              placeholder="https://leetcode.com/... or YouTube, blog, course link"
             />
 
             {/* Platform auto-detection */}
@@ -333,8 +365,14 @@ export default function AddProblemPage() {
             <Input
               label="Time Taken (minutes)"
               type="number"
+              min="0"
               value={timeTakenMins}
-              onChange={(e) => setTimeTakenMins(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === '' || Number(val) >= 0) {
+                  setTimeTakenMins(val);
+                }
+              }}
               placeholder="e.g. 25"
               className="w-full sm:w-40"
             />

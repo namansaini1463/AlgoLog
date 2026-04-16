@@ -96,7 +96,7 @@ export default function RichTextEditor({ value, onChange, placeholder, label }: 
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-sm dark:prose-invert max-w-none focus:outline-none min-h-[120px] px-3 py-2',
+        class: 'prose prose-sm dark:prose-invert max-w-none focus:outline-none min-h-[100px] px-3 py-2',
       },
     },
   });
@@ -324,8 +324,10 @@ export default function RichTextEditor({ value, onChange, placeholder, label }: 
           </div>
         )}
 
-        {/* Editor content */}
-        <EditorContent editor={editor} />
+        {/* Editor content — vertically resizable */}
+        <div className="resize-y overflow-auto min-h-[120px] max-h-[70vh]">
+          <EditorContent editor={editor} />
+        </div>
       </div>
 
       {/* Camera capture modal */}

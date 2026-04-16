@@ -29,7 +29,10 @@ public class UserProblemService {
     private final UserService userService;
     private final ActivityLogService activityLogService;
 
-    public Page<UserProblemDto> getUserProblems(UUID userId, Pageable pageable) {
+    public Page<UserProblemDto> getUserProblems(UUID userId, String category, Pageable pageable) {
+        if (category != null && !category.isBlank()) {
+            return userProblemRepository.findByUserIdAndOptionalCategory(userId, category, pageable).map(this::toDto);
+        }
         return userProblemRepository.findByUserId(userId, pageable).map(this::toDto);
     }
 
@@ -50,9 +53,18 @@ public class UserProblemService {
         User user = userService.findById(userId);
         ProblemBank bankProblem = isCustom ? null : problemBankService.findById(request.getBankProblemId());
 
+        // Derive category: from bank problem if available, else from request, default DSA
+        String category = "DSA";
+        if (bankProblem != null) {
+            category = bankProblem.getCategory();
+        } else if (request.getCategory() != null && !request.getCategory().isBlank()) {
+            category = request.getCategory();
+        }
+
         UserProblem userProblem = UserProblem.builder()
                 .user(user)
                 .bankProblem(bankProblem)
+                .category(category)
                 .customTitle(request.getCustomTitle())
                 .customUrl(request.getCustomUrl())
                 .customTopic(request.getCustomTopic())
@@ -130,6 +142,7 @@ public class UserProblemService {
         return UserProblemDto.builder()
                 .id(up.getId())
                 .bankProblemId(bp != null ? bp.getId() : null)
+                .category(up.getCategory())
                 .problem(bp != null ? problemBankService.toDto(bp) : null)
                 .customTitle(up.getCustomTitle())
                 .customUrl(up.getCustomUrl())

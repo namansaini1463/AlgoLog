@@ -29,7 +29,7 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -60,7 +60,7 @@ export default function Sidebar() {
             <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
               AlgoLog
             </h1>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">DSA Tracker</p>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Problem Tracker</p>
           </div>
           {/* Close button - mobile only */}
           <button

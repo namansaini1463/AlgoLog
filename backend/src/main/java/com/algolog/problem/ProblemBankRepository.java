@@ -16,16 +16,19 @@ public interface ProblemBankRepository extends JpaRepository<ProblemBank, UUID> 
     @Query(value = "SELECT * FROM problem_bank p WHERE p.is_published = true " +
            "AND (:topic IS NULL OR :topic = '' OR p.topic = :topic) " +
            "AND (:difficulty IS NULL OR :difficulty = '' OR p.difficulty = :difficulty) " +
+           "AND (:category IS NULL OR :category = '' OR p.category = :category) " +
            "AND (:search IS NULL OR :search = '' OR LOWER(p.title) LIKE LOWER(CONCAT('%', :search, '%'))) " +
            "ORDER BY p.created_at DESC",
            countQuery = "SELECT COUNT(*) FROM problem_bank p WHERE p.is_published = true " +
            "AND (:topic IS NULL OR :topic = '' OR p.topic = :topic) " +
            "AND (:difficulty IS NULL OR :difficulty = '' OR p.difficulty = :difficulty) " +
+           "AND (:category IS NULL OR :category = '' OR p.category = :category) " +
            "AND (:search IS NULL OR :search = '' OR LOWER(p.title) LIKE LOWER(CONCAT('%', :search, '%')))",
            nativeQuery = true)
     Page<ProblemBank> findPublishedWithFilters(
             @Param("topic") String topic,
             @Param("difficulty") String difficulty,
+            @Param("category") String category,
             @Param("search") String search,
             Pageable pageable);
 

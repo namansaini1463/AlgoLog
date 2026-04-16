@@ -25,7 +25,7 @@ const features = [
     icon: '🔍',
     title: 'Problem Bank',
     description:
-      'Browse a curated bank of DSA problems across platforms like LeetCode and Codeforces. Filter by difficulty and topic.',
+      'Browse a curated bank of DSA, LLD, and HLD problems across platforms like LeetCode, YouTube, and more. Filter by category, difficulty, and topic.',
   },
   {
     icon: '⏱️',
@@ -87,7 +87,7 @@ export default function LandingPage() {
               AlgoLog
             </h1>
             <span className="hidden sm:inline text-xs text-gray-500 dark:text-gray-400 border-l border-gray-300 dark:border-gray-700 pl-2">
-              DSA Progress Tracker
+              DSA · LLD · HLD Tracker
             </span>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
@@ -123,7 +123,7 @@ export default function LandingPage() {
         <div className="relative mx-auto max-w-4xl px-4 pb-16 pt-20 sm:px-6 sm:pb-24 sm:pt-28 text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary dark:border-primary/40 dark:bg-primary/10">
             <span className="inline-block h-2 w-2 rounded-full bg-primary animate-pulse" />
-            Spaced repetition for DSA
+            Spaced repetition for DSA, LLD & HLD
           </div>
           <h2 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
             Stop forgetting the{' '}
@@ -132,7 +132,7 @@ export default function LandingPage() {
             </span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base text-gray-600 dark:text-gray-400 sm:text-lg sm:mt-6">
-            AlgoLog combines a curated problem bank with a spaced repetition engine so you actually retain DSA concepts.
+            AlgoLog combines a curated problem bank with a spaced repetition engine so you actually retain DSA, LLD, and HLD concepts.
             Log problems, review on schedule, and track your growth — all in one place.
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
@@ -219,7 +219,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <div className="text-center mb-12 sm:mb-16">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-primary">Features</h3>
-            <p className="mt-2 text-2xl font-bold sm:text-3xl">Everything you need to master DSA</p>
+            <p className="mt-2 text-2xl font-bold sm:text-3xl">Everything you need to master DSA, LLD & HLD</p>
             <p className="mt-3 text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
               Built by engineers who were tired of re-solving the same problems because they forgot them two weeks later.
             </p>
@@ -308,7 +308,7 @@ export default function LandingPage() {
             Ready to stop re-solving problems?
           </h3>
           <p className="mt-3 text-gray-600 dark:text-gray-400">
-            Join AlgoLog and start building lasting DSA knowledge today.
+            Join AlgoLog and start building lasting DSA, LLD & HLD knowledge today.
           </p>
           <Link
             to="/register"
@@ -325,7 +325,7 @@ export default function LandingPage() {
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
             <div className="flex items-center gap-2">
               <span className="font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">AlgoLog</span>
-              <span className="text-xs text-gray-400">— DSA Progress Tracker</span>
+              <span className="text-xs text-gray-400">— DSA · LLD · HLD Tracker</span>
             </div>
             <div className="flex items-center gap-4">
               <a href="https://github.com/namansaini1463" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" aria-label="GitHub">

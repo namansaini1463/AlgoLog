@@ -1,4 +1,4 @@
-package com.algolog.topic.dto;
+package com.algolog.category.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +11,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TopicDto {
+public class UserCategoryDto {
 
     private UUID id;
     private String name;
     private String colorHex;
-    private String category;
+    private Integer sortOrder;
 }

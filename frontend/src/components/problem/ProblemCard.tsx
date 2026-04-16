@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import type { UserProblem } from '../../api/problems';
-import Badge, { difficultyVariant } from '../ui/Badge';
+import { problemsApi } from '../../api/problems';
+import Badge, { difficultyVariant, CategoryBadge } from '../ui/Badge';
 import Button from '../ui/Button';
 import RichTextViewer from '../ui/RichTextViewer';
+import RichTextEditor from '../ui/RichTextEditor';
+import Modal from '../ui/Modal';
 import { formatDate } from '../../utils/formatDate';
 import { cn } from '../../utils/cn';
 import { detectPlatform } from '../../utils/detectPlatform';
@@ -11,11 +14,12 @@ interface ProblemCardProps {
   problem: UserProblem;
   onDelete?: (id: string) => void;
   onFlag?: (id: string, isFlagged: boolean, note?: string) => void;
+  onNotesUpdated?: () => void;
   isFlagged?: boolean;
   flaggedNote?: string | null;
 }
 
-export default function ProblemCard({ problem, onDelete, onFlag, isFlagged = false, flaggedNote }: ProblemCardProps) {
+export default function ProblemCard({ problem, onDelete, onFlag, onNotesUpdated, isFlagged = false, flaggedNote }: ProblemCardProps) {
   const bp = problem.problem;
   const title = bp?.title || problem.customTitle || 'Untitled';
   const url = bp?.platformUrl || problem.customUrl;
@@ -25,7 +29,27 @@ export default function ProblemCard({ problem, onDelete, onFlag, isFlagged = fal
 
   const [showFlagPopover, setShowFlagPopover] = useState(false);
   const [flagNote, setFlagNote] = useState('');
+  const [notesExpanded, setNotesExpanded] = useState(false);
+  const [editNotesOpen, setEditNotesOpen] = useState(false);
+  const [editNotesValue, setEditNotesValue] = useState(problem.detailedNotes || '');
+  const [savingNotes, setSavingNotes] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
+
+  const handleSaveNotes = async () => {
+    setSavingNotes(true);
+    try {
+      await problemsApi.update(problem.id, {
+        confidence: problem.confidence,
+        detailedNotes: editNotesValue || undefined,
+      });
+      setEditNotesOpen(false);
+      onNotesUpdated?.();
+    } catch {
+      alert('Failed to save notes. Please try again.');
+    } finally {
+      setSavingNotes(false);
+    }
+  };
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -58,6 +82,9 @@ export default function ProblemCard({ problem, onDelete, onFlag, isFlagged = fal
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="text-sm sm:text-base font-medium text-gray-900 dark:text-gray-100">{title}</h3>
+            {problem.category && (
+              <CategoryBadge name={problem.category} />
+            )}
             {difficulty && (
               <Badge variant={difficultyVariant(difficulty)}>{difficulty}</Badge>
             )}
@@ -165,8 +192,35 @@ export default function ProblemCard({ problem, onDelete, onFlag, isFlagged = fal
         </div>
       </div>
 
-      {problem.detailedNotes && (
-        <div className="mt-3 line-clamp-3">
+      {/* Notes section */}
+      <div className="mt-3 flex gap-2">
+        {problem.detailedNotes && (
+          <button
+            type="button"
+            onClick={() => setNotesExpanded(!notesExpanded)}
+            className={cn(
+              'rounded-md px-2 py-0.5 text-xs font-medium transition-colors',
+              notesExpanded
+                ? 'bg-primary/10 text-primary'
+                : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400'
+            )}
+          >
+            {notesExpanded ? 'Hide Notes' : 'Show Notes'}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => {
+            setEditNotesValue(problem.detailedNotes || '');
+            setEditNotesOpen(true);
+          }}
+          className="rounded-md px-2 py-0.5 text-xs font-medium transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400"
+        >
+          {problem.detailedNotes ? 'Edit Notes' : 'Add Notes'}
+        </button>
+      </div>
+      {notesExpanded && problem.detailedNotes && (
+        <div className="mt-2 rounded-md bg-gray-50 px-3 py-2 dark:bg-gray-800/50">
           <RichTextViewer html={problem.detailedNotes} className="text-sm text-gray-600 dark:text-gray-400" />
         </div>
       )}
@@ -176,6 +230,21 @@ export default function ProblemCard({ problem, onDelete, onFlag, isFlagged = fal
         {problem.timeTakenMins && <span>⏱️ {problem.timeTakenMins} min</span>}
         {problem.hintsUsed && <span className="text-amber-600 dark:text-amber-500">💡 Used hints</span>}
       </div>
+
+      {/* Edit notes modal */}
+      <Modal open={editNotesOpen} onClose={() => setEditNotesOpen(false)} title="Edit Notes" className="max-w-2xl">
+        <RichTextEditor
+          value={editNotesValue}
+          onChange={setEditNotesValue}
+          placeholder="Approach, key insight, edge cases, mistakes..."
+        />
+        <div className="mt-4 flex gap-3 justify-end">
+          <Button size="sm" variant="secondary" onClick={() => setEditNotesOpen(false)}>Cancel</Button>
+          <Button size="sm" onClick={handleSaveNotes} disabled={savingNotes}>
+            {savingNotes ? 'Saving...' : 'Save Notes'}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

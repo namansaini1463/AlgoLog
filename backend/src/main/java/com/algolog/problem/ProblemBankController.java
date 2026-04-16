@@ -21,9 +21,10 @@ public class ProblemBankController {
     public ResponseEntity<Page<ProblemBankDto>> browseProblems(
             @RequestParam(required = false) String topic,
             @RequestParam(required = false) String difficulty,
+            @RequestParam(required = false) String category,
             @RequestParam(required = false) String search,
             @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(problemBankService.getPublishedProblems(topic, difficulty, search, pageable));
+        return ResponseEntity.ok(problemBankService.getPublishedProblems(topic, difficulty, category, search, pageable));
     }
 
     @GetMapping("/tags")

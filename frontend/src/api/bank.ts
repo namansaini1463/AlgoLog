@@ -10,6 +10,7 @@ export interface ProblemBank {
   platform: string;
   platformUrl: string;
   description: string;
+  category: string;
   isPublished: boolean;
   createdAt: string;
   updatedAt: string;

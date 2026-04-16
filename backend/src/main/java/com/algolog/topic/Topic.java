@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "topics")
+@Table(name = "topics", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "category"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,11 +20,15 @@ public class Topic {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, length = 100)
     private String name;
 
     @Column(name = "color_hex", length = 7)
     private String colorHex;
+
+    @Column(nullable = false, length = 50)
+    @Builder.Default
+    private String category = "DSA";
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

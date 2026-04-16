@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { bankApi, type ProblemBank } from '../../api/bank';
 import { problemsApi } from '../../api/problems';
+import { useCategoryStore } from '../../store/categoryStore';
 import TopBar from '../../components/layout/TopBar';
-import Badge, { difficultyVariant } from '../../components/ui/Badge';
+import Badge, { difficultyVariant, CategoryBadge } from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
@@ -19,15 +20,17 @@ export default function BrowseBankPage() {
   const [selected, setSelected] = useState<ProblemBank | null>(null);
   const [confidence, setConfidence] = useState(3);
   const [oneLiner, setOneLiner] = useState('');
+  const { category } = useCategoryStore();
   const queryClient = useQueryClient();
 
   const params: Record<string, string | number> = { page, size: 20 };
   if (search) params.search = search;
   if (difficulty) params.difficulty = difficulty;
   if (topic) params.topic = topic;
+  if (category !== 'ALL') params.category = category;
 
   const { data, isLoading } = useQuery({
-    queryKey: ['bank', page, search, difficulty, topic],
+    queryKey: ['bank', page, search, difficulty, topic, category],
     queryFn: () => bankApi.browse(params).then((r) => r.data),
   });
 
@@ -81,6 +84,7 @@ export default function BrowseBankPage() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-medium text-gray-900 dark:text-gray-100">{p.title}</span>
+                    <CategoryBadge name={p.category} />
                     <Badge variant={difficultyVariant(p.difficulty)}>{p.difficulty}</Badge>
                     <Badge variant="topic">{p.topic}</Badge>
                     {p.platform && (
