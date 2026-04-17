@@ -1,5 +1,5 @@
 # ---- Build Stage ----
-FROM ubuntu:22.04 AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /app
 
 # Install OpenJDK 25 and curl
