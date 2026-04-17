@@ -1,5 +1,5 @@
 # ---- Build Stage ----
-FROM eclipse-temurin:25-jdk-jammy AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /app
 
 # Copy Maven wrapper and pom.xml first (for layer caching)
